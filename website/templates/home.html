@@ -1,0 +1,65 @@
+{% extends "base.html" %} 
+{% block title %}To Do List{% endblock %}
+{% block content %}
+<h1 align="center">To Dos</h1>
+
+<!--First Row -->
+<div class="row">
+    <div class="column left">
+        <h3 align="center">Status</h3>
+    </div>
+ 
+    <div class="column middle">
+        <h3 align="center">Item</h3>
+    </div>
+</div>
+
+<ul class="list-group list-group-flush grid-list" id="todos">
+    {% for todo in user.todos %}
+    <!--Subsequent Row -->
+    <div class="row">
+        <div class="column left" align="center">
+            {% if todo.completed %}  
+            <button type="button" style="background-color:lightseagreen;">
+                <span aria-hidden="true">&check;</span>
+            </button>
+            <text>{{todo.date.strftime('%d-%m-%Y %H:%M:%S')}}</text>
+            {% else %}
+            <button type="button" style="background-color:lightblue">
+                <span aria-hidden="true">&#10152;</span>
+            </button>
+            {% endif %}
+        </div>
+     
+        <div class="column middle" align = "center">
+
+            <form id = "editForm_{{ todo.id }}" method="POST" enctype=multipart/form-data>
+                <textarea id="txtEdit_{{ todo.id }}" name="txtEdit" class="form-control flex-grow-1" {% if todo.completed %}disabled{% endif %} onkeyup="EnableDisable(this, {{ todo.id }})">
+                    {{ todo.data}}
+                </textarea>
+            </form>
+
+        </div>
+    
+        <div class="column right" align = "center">
+            <input id="btnChanges_{{ todo.id }}" type="button" value="Save Changes" disabled="disabled" {% if todo.completed %}disabled{% endif %} onclick="editItem({{ todo.id }})"/>
+            <input id="btnCompleted_{{ todo.id }}" type="button" value="Completed" {% if todo.completed %}disabled{% endif %} onclick="completeItem({{ todo.id }})"/>
+            <button type="button" class="close" onclick="deleteItem({{ todo.id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</ul>
+<form method="POST">
+    <h3 align="center">New item</h3>
+    <div class="row">
+        <div class="column middle" align = "center">
+            <input type="text" name="todo" id="todo" class="form-control"></text>
+        </div>
+        <div class="column right" ></div>
+            <button type="submit" class="btn btn-primary">Add Item</button>
+        </div>
+    </div>
+</form>
+{% endblock%}
